@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.license             = package['license']
   s.author              = package['author']
   s.source              = { :git => package['repository']['url'], :tag => "v#{s.version}" }
-  s.default_subspec     = 'Main'
+  s.default_subspec     = 'Master'
   s.requires_arc        = true
   s.platform            = :ios, "7.0"
   s.preserve_paths      = "**/*.js"
