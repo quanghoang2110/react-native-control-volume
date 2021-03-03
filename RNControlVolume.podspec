@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.platform            = :ios, "7.0"
   s.preserve_paths      = "**/*.js"
 
-  s.subspec 'Main' do |ss|
+  s.subspec 'Master' do |ss|
     ss.source_files     = "ios/RNControlVolume.{h,m}"
   end
 end
