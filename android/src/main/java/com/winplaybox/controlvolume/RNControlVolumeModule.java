@@ -113,12 +113,6 @@ public class RNControlVolumeModule extends ReactContextBaseJavaModule
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
     }
 
-    @Override
-    public void onNewIntent(Intent intent) {}
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {}
-
     public class VolumeBroadcastReceiver extends BroadcastReceiver {
 
         private boolean isRegistered = false;
