@@ -106,9 +106,10 @@ public class RNControlVolumeModule extends ReactContextBaseJavaModule
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onNewIntent(Intent intent) {}
 
-    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {}
 
     public class VolumeBroadcastReceiver extends BroadcastReceiver {
 
