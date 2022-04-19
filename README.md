@@ -4,11 +4,11 @@ Control device volume for iOS and Android.
 
 ## First installation step (applied for both iOS & Android)
 
-`$ npm install react-native-control-volume --save`
+`$ npm install @starling-tech/react-native-control-volume --save`
 
 #### 2. Automatic installation
 
-`$ react-native link react-native-control-volume`
+`$ react-native link @starling-tech/react-native-control-volume`
 
 #### 3. Manual installation
 
