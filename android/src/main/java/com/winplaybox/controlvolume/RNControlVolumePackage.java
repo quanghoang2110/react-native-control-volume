@@ -1,4 +1,4 @@
-package com.winplaybox.ControlVolume;
+package com.winplaybox.controlvolume;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

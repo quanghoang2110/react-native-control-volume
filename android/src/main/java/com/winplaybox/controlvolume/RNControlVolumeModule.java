@@ -1,4 +1,4 @@
-package com.winplaybox.ControlVolume;
+package com.winplaybox.controlvolume;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -22,122 +22,119 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class RNControlVolumeModule extends ReactContextBaseJavaModule
-    implements ActivityEventListener, LifecycleEventListener {
+        implements ActivityEventListener, LifecycleEventListener {
 
-  private String TAG = RNControlVolumeModule.class.getSimpleName();
-  private ReactApplicationContext rContext;
-  private float max_volume = (float) 0.0;
-  private AudioManager am;
-  private VolumeBroadcastReceiver volumeBR;
+    private String TAG = RNControlVolumeModule.class.getSimpleName();
+    private ReactApplicationContext rContext;
+    private float max_volume = (float) 0.0;
+    private AudioManager am;
+    private VolumeBroadcastReceiver volumeBR;
 
-  public RNControlVolumeModule(ReactApplicationContext reactContext) {
-    super(reactContext);
-    this.rContext = reactContext;
-  }
-
-  @Override
-  public String getName() {
-    return "ControlVolume";
-  }
-
-  @Override
-  public void onNewIntent(Intent intent) {
-  }
-
-  @Override
-  public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-  }
-
-  @Override
-  public void onHostResume() {
-    registerVolumeReceiver();
-  }
-
-  @Override
-  public void onHostPause() {
-    unregisterVolumeReceiver();
-  }
-
-  @Override
-  public void onHostDestroy() {
-  }
-
-  @Override
-  public void initialize() {
-    super.initialize();
-
-    try {
-      am = (AudioManager) this.rContext.getSystemService(Context.AUDIO_SERVICE);
-      max_volume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-      volumeBR = new VolumeBroadcastReceiver();
-      registerVolumeReceiver();
-    } catch (Exception e) {
-      Log.e(TAG, "Initialize Error", e);
-    }
-  }
-
-  private void registerVolumeReceiver() {
-    if (!volumeBR.isRegistered()) {
-      IntentFilter filter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
-      this.rContext.registerReceiver(volumeBR, filter);
-      volumeBR.setRegistered(true);
-    }
-  }
-
-  private void unregisterVolumeReceiver() {
-    if (volumeBR.isRegistered()) {
-      this.rContext.unregisterReceiver(volumeBR);
-      volumeBR.setRegistered(false);
-    }
-  }
-
-  public void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-    this.rContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
-  }
-
-  @ReactMethod
-  public void getVolume(Promise promise) {
-    promise.resolve(getNormalizedVolume());
-  }
-
-  @ReactMethod
-  public void change(float volume) {
-    try {
-      am.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (volume * max_volume), 0);
-    } catch (Exception e) {
-      Log.e(TAG, "Error Setting Volume", e);
-    }
-  }
-
-  private float getNormalizedVolume() {
-    return am.getStreamVolume(AudioManager.STREAM_MUSIC) * 1.0f / max_volume;
-  }
-
-  public class VolumeBroadcastReceiver extends BroadcastReceiver {
-
-    private boolean isRegistered = false;
-
-    public void setRegistered(boolean registered) {
-      isRegistered = registered;
-    }
-
-    public boolean isRegistered() {
-      return isRegistered;
+    public RNControlVolumeModule(ReactApplicationContext reactContext) {
+        super(reactContext);
+        this.rContext = reactContext;
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-      if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
-        float volume = getNormalizedVolume();
-        WritableMap params = Arguments.createMap();
-        params.putDouble("volume", volume);
-        try {
-          sendEvent(rContext, "VolumeChanged", params);
-        } catch (RuntimeException e) {
-          // Possible to interact with volume before JS bundle execution is finished.
-          // This is here to avoid app crashing.
-        }
-      }
+    public String getName() {
+        return "ControlVolume";
     }
-  }
+
+    @Override
+    public void onHostResume() {
+        registerVolumeReceiver();
+    }
+
+    @Override
+    public void onHostPause() {
+        unregisterVolumeReceiver();
+    }
+
+    @Override
+    public void onHostDestroy() {
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+
+        try {
+            am = (AudioManager) this.rContext.getSystemService(Context.AUDIO_SERVICE);
+            max_volume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            volumeBR = new VolumeBroadcastReceiver();
+            registerVolumeReceiver();
+        } catch (Exception e) {
+            Log.e(TAG, "Initialize Error", e);
+        }
+    }
+
+    private void registerVolumeReceiver() {
+        if (!volumeBR.isRegistered()) {
+            IntentFilter filter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
+            this.rContext.registerReceiver(volumeBR, filter);
+            volumeBR.setRegistered(true);
+        }
+    }
+
+    private void unregisterVolumeReceiver() {
+        if (volumeBR.isRegistered()) {
+            this.rContext.unregisterReceiver(volumeBR);
+            volumeBR.setRegistered(false);
+        }
+    }
+
+    public void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+        this.rContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+    }
+
+    @ReactMethod
+    public void getVolume(Promise promise) {
+        promise.resolve(getNormalizedVolume());
+    }
+
+    @ReactMethod
+    public void change(float volume) {
+        try {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (volume * max_volume), 0);
+        } catch (Exception e) {
+            Log.e(TAG, "Error Setting Volume", e);
+        }
+    }
+
+    private float getNormalizedVolume() {
+        return am.getStreamVolume(AudioManager.STREAM_MUSIC) * 1.0f / max_volume;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
+
+    public class VolumeBroadcastReceiver extends BroadcastReceiver {
+
+        private boolean isRegistered = false;
+
+        public void setRegistered(boolean registered) {
+            isRegistered = registered;
+        }
+
+        public boolean isRegistered() {
+            return isRegistered;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
+                float volume = getNormalizedVolume();
+                WritableMap params = Arguments.createMap();
+                params.putDouble("volume", volume);
+                try {
+                    sendEvent(rContext, "VolumeChanged", params);
+                } catch (RuntimeException e) {
+                    // Possible to interact with volume before JS bundle execution is finished.
+                    // This is here to avoid app crashing.
+                }
+            }
+        }
+    }
 }
